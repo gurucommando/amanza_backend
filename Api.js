@@ -29,6 +29,7 @@ mongoose
 app.use(
   urlencoded({
     extended: true,
+    
   })
 );
 app.use("/panda", router);
