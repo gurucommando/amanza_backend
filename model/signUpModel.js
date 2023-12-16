@@ -1,7 +1,9 @@
 const mongoose = require("mongoose");
+const jwt = require('jsonwebtoken');
 
 const signUpSchema = mongoose.Schema(
   {
+    
     name: { type: String, required: true },
     email: { type: String, required: true },
     password: { type: String, required: true },
@@ -35,12 +37,18 @@ const signUpModel = async (obj) => {
       .join(", ");
     return { status: 400, message: "Validation failed", errors: errorMessage };
   }
+
+ 
+
   try {
     const data = await connectMongoAndSchema.create(obj);
-    return { message: "Successfully Registered", data: data };
+    const token = jwt.sign({ userId: data._id }, 'dd', {
+      expiresIn: '1h',
+    });
+    return { message: "Successfully Registered", data: data ,token: token };
   } catch (error) {
     return { status: 500, message: "Failed to create user" };
   }
 };
 
-module.exports = signUpModel;
+module.exports = {signUpModel,connectMongoAndSchema};
