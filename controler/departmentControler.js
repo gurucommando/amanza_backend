@@ -17,6 +17,7 @@ const createDepartment = (req, res) => {
     }
 
     const { name, description } = req.body;
+
     const image = req.file ? req.file.buffer.toString('base64') : null; // Assuming the image is stored as base64 in this example
 
     const department = new Department({ name, description, image });
@@ -31,20 +32,26 @@ const createDepartment = (req, res) => {
 };
 
 // Update a department
+
 const updateDepartment = async (req, res) => {
-  const department_id  = req.body.id;
+  const departmentId = req.body.id;
+  const { name, description, image } = req.body;
 
   try {
-    const department = await Department.findById(department_id);
+    const department = await Department.findById(departmentId);
     
     if (!department) {
       return res.status(404).json({ message: 'Department not found' });
     }
-    
+
     // Update department fields based on req.body
-    if (req.body.name) department.name = req.body.name;
-    if (req.body.description) department.description = req.body.description;
-    // Add other fields to update as needed
+    if (name) department.name = name;
+    if (description) department.description = description;
+
+    // Check if a new image path is provided, update only if it exists
+    if (image !== undefined && image !== null && image.trim() !== '') {
+      department.image = image;
+    }
 
     const updatedDepartment = await department.save();
     res.json(updatedDepartment);

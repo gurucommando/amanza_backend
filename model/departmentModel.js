@@ -12,7 +12,7 @@ const departmentSchema = new mongoose.Schema({
   },
   image: {
     type: String, // Assuming the image is stored as a URL, adjust as needed
-    required: true,
+    // required: true,
   },
   // You can add more fields as needed
 });
