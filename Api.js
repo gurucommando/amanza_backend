@@ -17,6 +17,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 
 // parse application/json
 app.use(bodyParser.json());
+
 mongoose
   .connect(process.env.DB_URL)
   .then(() => {
