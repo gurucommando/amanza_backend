@@ -62,7 +62,7 @@ const createCategory = async (req, res) => {
     
         // Save the category
         const savedCategory = await newCategory.save();
-        res.status(201).json(savedCategory);
+        res.status(201).json({data: savedCategory , status:"success"});
       } catch (err) {
         res.status(400).json({ message: err.message });
       }
