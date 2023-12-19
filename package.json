@@ -4,7 +4,7 @@
   "main": "index.js", 
   "scripts": {
     "start": "node Api.js", 
-    "build": "your-build-command-here"
+    "build": "npm run build"
   },
   "dependencies": {
     "body-parser": "^1.20.2",
