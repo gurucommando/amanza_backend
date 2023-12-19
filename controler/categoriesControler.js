@@ -20,18 +20,40 @@ const getAllCategories = async (req, res) => {
 
 // Get category by ID
 const getCategoryById = async (req, res) => {
-  const categoryId = req.query.id;
-  console.log(req.query)
-  try {
-    const category = await Category.findById(categoryId).populate('department', 'name');
-    if (!category) {
-      return res.status(404).json({ message: 'Category not found' });
+    const  category_id  = req.query.id;
+    console.log(req.query.id)
+    try {
+      const category = await Category.findById(category_id);
+    //   console.log(category)
+      if (!category) {
+        return res.status(404).json({ message: 'category not found' });
+      }
+      res.json({data:category});
+    } catch (err) {
+      res.status(500).json({ message: err.message });
     }
-    res.json(category);
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
 };
+
+// Get category by Department Id
+const getCategoryByDepartment = async (req, res) => {
+    const departmentId = req.query.id; // Access department ID from query parameter
+//   console.log(departmentId)
+    try {
+      // Find categories that belong to the specified department
+      const categories = await Category.find({ department: departmentId })
+      .populate({
+        path: 'department',
+        select: '_id name' // Select only the _id and name fields of the department
+      });
+      if (!categories || categories.length === 0) {
+        return res.status(404).json({ message: 'No categories found for the specified department' });
+      }
+      
+      res.json(categories);
+    } catch (err) {
+      res.status(500).json({ message: err.message });
+    }
+  };
 
 // Create a category
 const createCategory = async (req, res) => {
@@ -62,9 +84,10 @@ const createCategory = async (req, res) => {
     
         // Save the category
         const savedCategory = await newCategory.save();
-        res.status(201).json(savedCategory);
+        res.status(201).json({data: savedCategory , status:"success"});
       } catch (err) {
         res.status(400).json({ message: err.message });
+
       }
 
 })
@@ -119,5 +142,7 @@ module.exports = {
   getCategoryById,
   createCategory,
   updateCategory,
-  deleteCategory
+  deleteCategory,
+  getCategoryByDepartment
+
 };
