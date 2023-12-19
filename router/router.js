@@ -33,5 +33,8 @@ router.get('/get-single-category', getCategoryById);
 router.get('/get-single-categoryByDepartment', getCategoryByDepartment);
 router.post('/update-category',updateCategory);
 router.post('/delete-single-category',deleteCategory);
+router.get('/getApi',(req,res)=>{
+    res.send("API is working")
+});
 
 module.exports = router;
