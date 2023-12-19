@@ -4,7 +4,11 @@
   "main": "index.js", 
   "scripts": {
     "start": "node Api.js", 
+<<<<<<< HEAD
     "build": "your-build-command-here"
+=======
+    "build": "npm run build"
+>>>>>>> 3354fe7f4071a3a07e23dc2b4ce8408e832974cf
   },
   "dependencies": {
     "body-parser": "^1.20.2",
