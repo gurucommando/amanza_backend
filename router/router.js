@@ -35,4 +35,6 @@ router.get('/get-single-categoryByDepartment', getCategoryByDepartment);
 router.get('/delete-single-category',deleteCategory);
 
 
+
+
 module.exports = router;
