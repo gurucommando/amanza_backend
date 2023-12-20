@@ -19,22 +19,22 @@ router.post('/get-user-details',getUserDetails);
 
 /////////////////// Department //////////////////////////////
 
-router.get('/all-department', getAllDepartments);
-router.post('/get-single-department', getDepartmentById);
 router.post('/add-department',createDepartment);
 router.post('/update-department',updateDepartment);
+router.get('/all-department', getAllDepartments);
+router.post('/get-single-department', getDepartmentById);
 router.post('/delete-single-department',deleteDepartment);
 
 
 // CRUD operations for categories
 router.post('/add-category',createCategory);
+router.post('/update-category',updateCategory);
 router.get('/all-categories', getAllCategories);
 router.get('/get-single-category', getCategoryById);
 router.get('/get-single-categoryByDepartment', getCategoryByDepartment);
-router.post('/update-category',updateCategory);
-router.post('/delete-single-category',deleteCategory);
-router.get('/getApi',(req,res)=>{
-    res.send("API is working")
-});
+router.get('/delete-single-category',deleteCategory);
+
+
+
 
 module.exports = router;
