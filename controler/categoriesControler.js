@@ -12,7 +12,7 @@ const upload = multer({ storage: storage }).single('image');
 const getAllCategories = async (req, res) => {
   try {
     const categories = await Category.find().populate('department', 'name');
-    res.json(categories);
+    res.json({data:categories });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
@@ -21,14 +21,16 @@ const getAllCategories = async (req, res) => {
 // Get category by ID
 const getCategoryById = async (req, res) => {
     const  category_id  = req.query.id;
-    console.log(req.query.id)
+    // console.log(category_id)
     try {
-      const category = await Category.findById(category_id);
+    //   const category = await Category.findById(category_id);
+    const category = await Category.findById(category_id).populate('department', '_id name');
+    // const category = await Category.findById(category_id);
     //   console.log(category)
       if (!category) {
         return res.status(404).json({ message: 'category not found' });
       }
-      res.json({data:category});
+      res.json({data:category}); 
     } catch (err) {
       res.status(500).json({ message: err.message });
     }
@@ -96,36 +98,79 @@ const createCategory = async (req, res) => {
   };
 
 // Update a category
+// const updateCategory = async (req, res) => {
+//   const categoryId = req.params.id;
+//   const { name, description, image, department_id } = req.body;
+
+//   try {
+//     const category = await Category.findById(categoryId);
+//     if (!category) {
+//       return res.status(404).json({ message: 'Category not found' });
+//     }
+
+//     const department = await Department.findById(department_id);
+//     if (!department) {
+//       return res.status(404).json({ message: 'Department not found' });
+//     }
+
+//     category.name = name;
+//     category.description = description;
+//     category.image = image;
+//     category.department = department_id;
+
+//     const updatedCategory = await category.save();
+//     res.json(updatedCategory);
+//   } catch (err) {
+//     res.status(400).json({ message: err.message });
+//   }
+// };
+
 const updateCategory = async (req, res) => {
-  const categoryId = req.params.id;
-  const { name, description, image, department_id } = req.body;
+    const categoryId = req.query.id;
+    try {
+      const category = await Category.findById(categoryId);
+      
+      if (!category) {
+        return res.status(404).json({ message: 'Category not found' });
+      }
+  
+      // const upload = util.promisify(uploadMiddleware(req, res)); // Assuming you've defined your multer middleware as 'uploadMiddleware'
+  
+      upload(req, res, async (err) => {
+        if (err instanceof multer.MulterError) {
+          return res.status(400).json({ message: 'File upload error' });
+        } else if (err) {
+          return res.status(500).json({ message: err.message });
+        }
+  
+        const { name, description , department } = req.body;
+  
+        // Update department fields based on req.body
+        if (name) category.name = name;
+        if (description) category.description = description;
+        if (department) category.department = department;
+  
+        // Check if a new image is provided in the form data and update it
+        if (req.file) {
+          // Assuming you're using multer for handling file uploads
+          category.image = req.file.path; // Update with the new image path
+        }
+  
+        const updatedCategory = await category.save();
 
-  try {
-    const category = await Category.findById(categoryId);
-    if (!category) {
-      return res.status(404).json({ message: 'Category not found' });
+        // Populate the department field in the updated category response
+      await updatedCategory.populate('department', '_id name');
+
+        res.json({ status: true, data: updatedCategory });
+      });
+    } catch (err) {
+      res.status(500).json({ message: err.message });
     }
-
-    const department = await Department.findById(department_id);
-    if (!department) {
-      return res.status(404).json({ message: 'Department not found' });
-    }
-
-    category.name = name;
-    category.description = description;
-    category.image = image;
-    category.department = department_id;
-
-    const updatedCategory = await category.save();
-    res.json(updatedCategory);
-  } catch (err) {
-    res.status(400).json({ message: err.message });
-  }
-};
+  };
 
 // Delete a category
 const deleteCategory = async (req, res) => {
-  const categoryId = req.params.id;
+  const categoryId = req.query.id;
   try {
     const deletedCategory = await Category.findByIdAndDelete(categoryId);
     if (!deletedCategory) {

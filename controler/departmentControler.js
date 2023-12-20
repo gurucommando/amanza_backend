@@ -31,12 +31,9 @@ const createDepartment = (req, res) => {
   });
 };
 
-// Update a department
 
 const updateDepartment = async (req, res) => {
-  const departmentId = req.body.id;
-  const { name, description, image } = req.body;
-
+  const departmentId = req.query.id;
   try {
     const department = await Department.findById(departmentId);
     
@@ -44,17 +41,30 @@ const updateDepartment = async (req, res) => {
       return res.status(404).json({ message: 'Department not found' });
     }
 
-    // Update department fields based on req.body
-    if (name) department.name = name;
-    if (description) department.description = description;
+    // const upload = util.promisify(uploadMiddleware(req, res)); // Assuming you've defined your multer middleware as 'uploadMiddleware'
 
-    // Check if a new image path is provided, update only if it exists
-    if (image !== undefined && image !== null && image.trim() !== '') {
-      department.image = image;
-    }
+    upload(req, res, async (err) => {
+      if (err instanceof multer.MulterError) {
+        return res.status(400).json({ message: 'File upload error' });
+      } else if (err) {
+        return res.status(500).json({ message: err.message });
+      }
 
-    const updatedDepartment = await department.save();
-    res.json(updatedDepartment);
+      const { name, description } = req.body;
+
+      // Update department fields based on req.body
+      if (name) department.name = name;
+      if (description) department.description = description;
+
+      // Check if a new image is provided in the form data and update it
+      if (req.file) {
+        // Assuming you're using multer for handling file uploads
+        department.image = req.file.path; // Update with the new image path
+      }
+
+      const updatedDepartment = await department.save();
+      res.json({ status: true, data: updatedDepartment });
+    });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
@@ -68,7 +78,7 @@ const updateDepartment = async (req, res) => {
 const getAllDepartments = async (req, res) => {
   try {
     const departments = await Department.find();
-    res.json({data:departments});
+    res.json({status:true ,data:departments});
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
@@ -83,7 +93,7 @@ const getAllDepartments = async (req, res) => {
       if (!department) {
         return res.status(404).json({ message: 'Department not found' });
       }
-      res.json({data:department});
+      res.json({status:true, data:department});
     } catch (err) {
       res.status(500).json({ message: err.message });
     }
