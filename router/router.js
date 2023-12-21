@@ -17,6 +17,7 @@ router.get('/allUsers',getAllUsers);
 router.post('/get-user-details',getUserDetails);
 
 
+
 /////////////////// Department //////////////////////////////
 
 router.post('/add-department',createDepartment);
