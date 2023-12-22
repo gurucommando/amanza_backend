@@ -31,9 +31,12 @@ const createDepartment = (req, res) => {
   });
 };
 
+// Update a department
 
 const updateDepartment = async (req, res) => {
   const departmentId = req.query.id;
+  const { name, description, image } = req.body;
+
   try {
     const department = await Department.findById(departmentId);
     
@@ -50,7 +53,7 @@ const updateDepartment = async (req, res) => {
         return res.status(500).json({ message: err.message });
       }
 
-      const { name, description } = req.body;
+      const { name, description ,image } = req.body;
 
       // Update department fields based on req.body
       if (name) department.name = name;
@@ -59,9 +62,12 @@ const updateDepartment = async (req, res) => {
       // Check if a new image is provided in the form data and update it
       if (req.file) {
         // Assuming you're using multer for handling file uploads
-        department.image = req.file.path; // Update with the new image path
+        department.image = req.file.buffer.toString('base64') // Update with the new image path
+      }else{
+        department.image = null
       }
-
+      
+      
       const updatedDepartment = await department.save();
       res.json({ status: true, data: updatedDepartment });
     });
