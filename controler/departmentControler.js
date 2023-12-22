@@ -53,7 +53,7 @@ const updateDepartment = async (req, res) => {
         return res.status(500).json({ message: err.message });
       }
 
-      const { name, description ,image } = req.body;
+      const { name, description  } = req.body;
 
       // Update department fields based on req.body
       if (name) department.name = name;
