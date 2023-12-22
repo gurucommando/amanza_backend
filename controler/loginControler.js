@@ -10,7 +10,7 @@ async function loginControler(req, res) {
 
     if (user) {
       // User found, send a success response with user data and token
-      const token = jwt.sign({ userId: user._id }, 'x_access_token', { expiresIn: '1h' });
+      const token = jwt.sign({ userId: user._id }, 'x_access_token', { expiresIn: '10h' });
       const userData = {
         _id: user._id,
         name: user.name, // Assuming 'name' is a property in your user model

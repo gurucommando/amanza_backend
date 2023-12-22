@@ -150,11 +150,14 @@ const updateCategory = async (req, res) => {
         if (description) category.description = description;
         if (department) category.department = department;
   
-        // Check if a new image is provided in the form data and update it
-        if (req.file) {
-          // Assuming you're using multer for handling file uploads
-          category.image = req.file.path; // Update with the new image path
-        }
+        
+      // Check if a new image is provided in the form data and update it
+      if (req.file) {
+        // Assuming you're using multer for handling file uploads
+        category.image = req.file.buffer.toString('base64') // Update with the new image path
+      }else{
+        category.image = null
+      }
   
         const updatedCategory = await category.save();
 
@@ -171,6 +174,7 @@ const updateCategory = async (req, res) => {
 // Delete a category
 const deleteCategory = async (req, res) => {
   const categoryId = req.query.id;
+
   try {
     const deletedCategory = await Category.findByIdAndDelete(categoryId);
     if (!deletedCategory) {
