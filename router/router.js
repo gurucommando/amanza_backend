@@ -46,4 +46,7 @@ router.get('/get-single-productByCategory', getProductByCategory);
 router.get('/delete-single-product',deleteProduct);
 
 
+  
+
+
 module.exports = router;
