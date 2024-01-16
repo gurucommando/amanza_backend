@@ -51,7 +51,7 @@ const createProduct = async (req, res) => {
 const getAllProducts = async (req, res) => {
   try {
     const products = await Product.find().populate('department', 'name').populate('category', 'name');
-    res.json(products);
+    res.json({data:products});
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
@@ -65,7 +65,7 @@ const getProductById = async (req, res) => {
     if (!product) {
       return res.status(404).json({ message: 'Product not found' });
     }
-    res.json(product);
+    res.json({data:product});
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
